@@ -9,9 +9,9 @@ import java.sql.SQLException;
 
 public class LoginDbConn {
 
-	/*public LoginDbConn() {
-		// TODO Auto-generated constructor stub
-	}*/
+	/*
+	 * public LoginDbConn() { // TODO Auto-generated constructor stub }
+	 */
 
 	public LoginDbConn(String uname, String pwd) {
 		this.getConn(uname, pwd);
@@ -44,7 +44,7 @@ public class LoginDbConn {
 			ResultSet rs = pst.executeQuery();
 
 			// 4. Process the result set
-			new LoginLogic(rs);
+			LoginLogic.process(rs);
 
 			// 5. Close Connection
 			conn.close();

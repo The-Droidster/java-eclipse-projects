@@ -3,26 +3,21 @@ package sk.loginapp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class LoginLogic {
 
 	public LoginLogic() {
 		new LoginUI();
-
 	}
 
-	public LoginLogic(ResultSet rs) {
-		this.process(rs);
-	}
-
-	private void process(ResultSet rs) {
+	static void process(ResultSet rs) {
 		try {
 			if (rs.next()) {
-				JOptionPane.showMessageDialog(null, "Login Successful!");
+				LoginUI.loginSuccess();
 
 			} else {
-				JOptionPane.showMessageDialog(null, "Login Failed!");
+				LoginUI.loginFailed();
 			}
 		} catch (SQLException e) {
 			// TODO: handle exception
@@ -31,7 +26,14 @@ public class LoginLogic {
 
 	public static void main(String[] args) {
 
-		new LoginLogic();
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				new LoginLogic();
+
+			}
+		});
 
 	}
 
