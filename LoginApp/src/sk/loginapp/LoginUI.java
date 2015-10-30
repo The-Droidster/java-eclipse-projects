@@ -64,7 +64,7 @@ public class LoginUI {
 
 		tfUname = new JTextField(10);
 		tfUname.setBounds(120, 20, 120, 20);
-		
+
 		pfPwd = new JPasswordField(10);
 		pfPwd.setEchoChar('*');
 		pfPwd.setBounds(120, 50, 120, 20);
