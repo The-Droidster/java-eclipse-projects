@@ -7,6 +7,11 @@ import javax.swing.SwingUtilities;
 
 public class LoginLogic {
 
+	/**
+	 * Possible alternative to Singleton pattern:
+	 * static final LoginUI lu = new LoginUI();
+	 * without the need for any change in the LoginUI class
+	 */
 	static final LoginUI lu = LoginUI.getInstance(); // immutable singleton
 														// object reference
 

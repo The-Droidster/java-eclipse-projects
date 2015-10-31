@@ -56,10 +56,20 @@ public class LoginDbConn {
 			// 4. Process the result set
 			new LoginLogic(rs); // pass result set to Logic class for processing
 
-			// 5. Close Connection
+			// 5. Close Connection/ Clean up environment
+			rs.close();
+			pst.close();
 			conn.close();
 		} catch (SQLException | ClassNotFoundException e) {
-
+			e.printStackTrace();
+		} finally {
+			// finally block used to close resources
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException se) {
+				se.printStackTrace();
+			}
 		}
 
 	}
