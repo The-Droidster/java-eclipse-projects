@@ -21,12 +21,12 @@ public class UIStart {
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		
 		switch (choice) {		
-		case JOptionPane.YES_OPTION:
+		case JOptionPane.YES_OPTION: // Account exists, proceed to Login
 			LoginUI.getInstance();
 			break;
 			
 		case JOptionPane.NO_OPTION:
-			SignUpUI.getInstance();
+			SignUpUI.getInstance(); // New user, proceed to Sign Up
 			break;
 			
 		default:

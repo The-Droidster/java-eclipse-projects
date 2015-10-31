@@ -14,6 +14,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 class SignUpUI {
+
 	// Container declarations
 	private JFrame frame;
 	private JPanel panel;
@@ -36,13 +37,13 @@ class SignUpUI {
 		return su;
 	}
 
-	private void initUI() {
+	private void initUI() { // Initialize UI
 		// set native OS UI
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException
 				| InstantiationException e) {
-
+			e.printStackTrace();
 		}
 		choice = JOptionPane.showConfirmDialog(null, "Proceed to SignUp?", "SignUp Prompt!", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
@@ -52,7 +53,7 @@ class SignUpUI {
 			System.exit(0);
 	}
 
-	private void createFrame() {
+	private void createFrame() { // draw JFrame
 
 		frame = new JFrame("SignUp Form");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,33 +62,33 @@ class SignUpUI {
 		frame.add(panel);
 		placePanelComponents(panel); // UI components handler
 
-		frame.setSize(300, 160);
+		frame.setSize(330, 160);
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 
 	}
 
-	private void placePanelComponents(JPanel panel) {
+	private void placePanelComponents(JPanel panel) { // Add components to panel
 
 		panel.setLayout(null);
 
-		lblUname = new JLabel("Username: ");
+		lblUname = new JLabel("Enter a Username: ");
 		lblUname.setBounds(50, 20, 120, 20);
-		lblPwd = new JLabel("Password: ");
+		lblPwd = new JLabel("Enter a Password: ");
 		lblPwd.setBounds(50, 50, 120, 20);
 
 		tfUname = new JTextField(10);
-		tfUname.setBounds(120, 20, 120, 20);
+		tfUname.setBounds(150, 20, 120, 20);
 
 		pfPwd = new JPasswordField(10);
-		// pfPwd.setEchoChar('*');
-		pfPwd.setBounds(120, 50, 120, 20);
+		pfPwd.setEchoChar('\0');
+		pfPwd.setBounds(150, 50, 120, 20);
 
 		btnSignUp = new JButton("Sign Up");
-		btnSignUp.setBounds(50, 85, 90, 25);
+		btnSignUp.setBounds(60, 85, 95, 25);
 		btnCancel = new JButton("Cancel");
-		btnCancel.setBounds(150, 85, 90, 25);
+		btnCancel.setBounds(165, 85, 95, 25);
 
 		panel.add(lblUname);
 		panel.add(lblPwd);
@@ -135,22 +136,23 @@ class SignUpUI {
 
 	void signUpSuccess() {
 		JOptionPane.showMessageDialog(null, "Successfully Signed Up!");
-		choice = JOptionPane.showConfirmDialog(null, "Do you wish to Login now?", "Login now?", JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE);
-		if (choice == JOptionPane.YES_OPTION) {
+
+		choice = JOptionPane.showConfirmDialog(null, "Do you wish to Login now?", "Login now?",
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+		if (choice == JOptionPane.YES_OPTION) { // Login immediately
 			frame.setVisible(false);
 			frame.dispose();
 			LoginUI.getInstance();
-		}
-		else {
+		} else {
 			clearTF();
 			System.exit(0);
 		}
 	}
 
-	void userExists() {
+	void userExists() { // Prevent username duplication
 
-		JOptionPane.showMessageDialog(null, "User Exists. Please choose a different username.");
+		JOptionPane.showMessageDialog(null, "User Exists. Please choose a different username.", "Duplicate Username", JOptionPane.WARNING_MESSAGE);
 		clearTF();
 
 	}

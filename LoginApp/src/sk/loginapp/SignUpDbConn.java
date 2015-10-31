@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
 class SignUpDbConn {
 	// DB related parameters
 	String driverClass; // name of the oracle jdbc driver
@@ -18,7 +17,7 @@ class SignUpDbConn {
 	PreparedStatement pst; // type of query
 	ResultSet rs; // holds query result
 
-	private boolean userExists;
+	private boolean userExists; // check if user already exists
 
 	/*
 	 * public LoginDbConn() { // TODO Auto-generated constructor stub }
@@ -41,17 +40,7 @@ class SignUpDbConn {
 			dbpwd = "tiger";
 			conn = DriverManager.getConnection(dburl, dbuname, dbpwd);
 
-			// 2. Create a statement
-			// String sql = "SELECT * FROM users WHERE name = '"+uname+"' and
-			// password = '"+pwd+"'";
-			// Statement st = conn.createStatement();
-			sql = "select * from users where name = ?";
-			pst = conn.prepareStatement(sql);
-
-			pst.setString(1, uname);
-
-			// 3. Execute SQL query
-			rs = pst.executeQuery();
+			rs = checkUserExists(uname);
 
 			// 4. Process the result set
 			userExists = new SignUpLogic().process(rs); // pass result set to
@@ -81,6 +70,22 @@ class SignUpDbConn {
 			}
 		}
 
+	}
+
+	private ResultSet checkUserExists(String uname) {
+		try {
+			// 2. Create a statement
+			sql = "select * from users where name = ?";
+			pst = conn.prepareStatement(sql);
+
+			pst.setString(1, uname);
+
+			// 3. Execute SQL query
+			rs = pst.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return rs;
 	}
 
 	private void insertUser(String uname, String pwd) {

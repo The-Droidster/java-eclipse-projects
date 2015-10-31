@@ -38,14 +38,15 @@ class LoginUI {
 		return lg;
 	}
 
-	private void initUI() {
+	private void initUI() { // Initialize UI
 		// set native OS UI
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException
 				| InstantiationException e) {
-
+			e.printStackTrace();
 		}
+		
 		choice = JOptionPane.showConfirmDialog(null, "Proceed to Login?", "Login Prompt!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (choice == JOptionPane.YES_OPTION)
 			createFrame();
@@ -53,7 +54,7 @@ class LoginUI {
 			System.exit(0);
 	}
 
-	private void createFrame() {
+	private void createFrame() { // draw JFrame
 
 		frame = new JFrame("Login Form");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,7 +70,7 @@ class LoginUI {
 
 	}
 
-	private void placePanelComponents(JPanel panel) {
+	private void placePanelComponents(JPanel panel) { // Add components to panel 
 
 		panel.setLayout(null);
 
@@ -82,7 +83,6 @@ class LoginUI {
 		tfUname.setBounds(120, 20, 120, 20);
 
 		pfPwd = new JPasswordField(10);
-		pfPwd.setEchoChar('*');
 		pfPwd.setBounds(120, 50, 120, 20);
 
 		btnLogin = new JButton("Login");
@@ -143,7 +143,7 @@ class LoginUI {
 
 	void loginFailed() {
 		if (count > 2) { // Allow only 3 login attempts
-			JOptionPane.showMessageDialog(null, "Exceeded Max Login Attempts! Exiting!", null, JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Exceeded Max Login Attempts! Exiting!", "Too many tries", JOptionPane.WARNING_MESSAGE);
 			System.exit(0);
 		}
 		else {
