@@ -25,19 +25,20 @@ public class LoginUI {
 	private JPasswordField pfPwd;
 	private JButton btnLogin, btnCancel;
 
+	private static int count = 0;
+	private int choice;
 	private static final LoginUI lu = new LoginUI(); // immutable singleton
 														// object
 
 	private LoginUI() { // prevent external instantiation
-		createFrame();
+		initUI();
 	}
 
 	static LoginUI getInstance() { // getter for the singleton object
 		return lu;
 	}
 
-	private void createFrame() {
-
+	private void initUI() {
 		// set native OS UI
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -45,6 +46,15 @@ public class LoginUI {
 				| InstantiationException e) {
 
 		}
+		choice = JOptionPane.showConfirmDialog(null, "Proceed to Login?", "Login Prompt!", JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		if (choice == JOptionPane.YES_OPTION)
+			createFrame();
+		else
+			System.exit(0);
+	}
+
+	private void createFrame() {
 
 		frame = new JFrame("Login App");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -97,6 +107,7 @@ public class LoginUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
+				count++; // Counter for login attempts
 				try {
 					String uname = tfUname.getText().trim();
 					String pwd = new String(pfPwd.getPassword());
@@ -132,8 +143,14 @@ public class LoginUI {
 	}
 
 	void loginFailed() {
-		JOptionPane.showMessageDialog(null, "Login Failed!");
-		clearTF();
+		if (count > 2) { // Allow only 3 login attempts
+			JOptionPane.showMessageDialog(null, "Exceeded Max Login Attempts! Exiting!", null, JOptionPane.WARNING_MESSAGE);
+			System.exit(0);
+		}
+		else {
+			JOptionPane.showMessageDialog(null, "Login Failed! "+(3-count)+" Login attempt/s left!");
+			clearTF();
+		}
 	}
 
 	private void clearTF() { // clear JTextField
