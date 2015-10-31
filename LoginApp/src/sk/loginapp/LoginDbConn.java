@@ -44,7 +44,7 @@ public class LoginDbConn {
 			ResultSet rs = pst.executeQuery();
 
 			// 4. Process the result set
-			LoginLogic.process(rs);
+			new LoginLogic(rs);
 
 			// 5. Close Connection
 			conn.close();

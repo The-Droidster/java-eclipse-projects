@@ -7,17 +7,23 @@ import javax.swing.SwingUtilities;
 
 public class LoginLogic {
 
+	LoginUI lu = LoginUI.getInstance();
+
 	public LoginLogic() {
-		new LoginUI();
+		// TODO Auto-generated constructor stub
 	}
 
-	static void process(ResultSet rs) {
+	public LoginLogic(ResultSet rs) {
+		process(rs);
+	}
+
+	void process(ResultSet rs) {
 		try {
 			if (rs.next()) {
-				LoginUI.loginSuccess();
+				lu.loginSuccess();
 
 			} else {
-				LoginUI.loginFailed();
+				lu.loginFailed();
 			}
 		} catch (SQLException e) {
 			// TODO: handle exception

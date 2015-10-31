@@ -21,12 +21,18 @@ public class LoginUI {
 
 	// Component declarations
 	private JLabel lblUname, lblPwd;
-	private static JTextField tfUname;
-	private static JPasswordField pfPwd;
+	private JTextField tfUname;
+	private JPasswordField pfPwd;
 	private JButton btnLogin, btnCancel;
 
-	public LoginUI() {
-		this.createFrame();
+	private static LoginUI lu = new LoginUI();
+
+	private LoginUI() {
+		createFrame();
+	}
+
+	static LoginUI getInstance() {
+		return lu;
 	}
 
 	private void createFrame() {
@@ -44,7 +50,7 @@ public class LoginUI {
 
 		panel = new JPanel();
 		frame.add(panel);
-		this.placePanelComponents(panel);
+		placePanelComponents(panel);
 
 		frame.setSize(300, 160);
 		frame.setResizable(false);
@@ -118,18 +124,18 @@ public class LoginUI {
 
 	}
 
-	static void loginSuccess() {
+	void loginSuccess() {
 		JOptionPane.showMessageDialog(null, "Login Successful!");
 		clearTF();
 		System.exit(0);
 	}
 
-	static void loginFailed() {
+	void loginFailed() {
 		JOptionPane.showMessageDialog(null, "Login Failed!");
 		clearTF();
 	}
 
-	private static void clearTF() {
+	private void clearTF() {
 		tfUname.setText("");
 		pfPwd.setText("");
 	}
