@@ -3,40 +3,40 @@ package sk.loginapp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.swing.SwingUtilities;
+//import javax.swing.SwingUtilities;
 
-public class LoginLogic {
+class LoginLogic {
 
 	/**
 	 * Possible alternative to Singleton pattern:
 	 * static final LoginUI lu = new LoginUI();
 	 * without the need for any change in the LoginUI class
-	 */
+	 *//*
 	static final LoginUI lu = LoginUI.getInstance(); // immutable singleton
 														// object reference
 
 	public LoginLogic() {
 		// TODO Auto-generated constructor stub
-	}
+	}*/
 
-	public LoginLogic(ResultSet rs) { // parameterized constructor
-		process(rs);
+	public LoginLogic() { // default constructor
+		
 	}
 
 	void process(ResultSet rs) { // process ResultSet to authenticate login
 		try {
 			if (rs.next()) {
-				lu.loginSuccess();
+				LoginUI.getInstance().loginSuccess();
 
 			} else {
-				lu.loginFailed();
+				LoginUI.getInstance().loginFailed();
 			}
 		} catch (SQLException e) {
 			// TODO: handle exception
 		}
 	}
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 
 		SwingUtilities.invokeLater(new Runnable() {// delegate GUI updated to
 													// EDT
@@ -48,6 +48,6 @@ public class LoginLogic {
 			}
 		});
 
-	}
+	}*/
 
 }

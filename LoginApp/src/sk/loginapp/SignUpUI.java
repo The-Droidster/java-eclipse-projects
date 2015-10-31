@@ -13,8 +13,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-class LoginUI {
-
+class SignUpUI {
 	// Container declarations
 	private JFrame frame;
 	private JPanel panel;
@@ -23,19 +22,18 @@ class LoginUI {
 	private JLabel lblUname, lblPwd;
 	private JTextField tfUname;
 	private JPasswordField pfPwd;
-	private JButton btnLogin, btnCancel;
+	private JButton btnSignUp, btnCancel;
 
-	private static int count = 0;
 	private int choice;
-	private static final LoginUI lg = new LoginUI(); // immutable singleton
+	private static final SignUpUI su = new SignUpUI(); // immutable singleton
 														// object
 
-	private LoginUI() { // prevent external instantiation
+	private SignUpUI() { // prevent external instantiation
 		initUI();
 	}
 
-	static LoginUI getInstance() { // getter for the singleton object
-		return lg;
+	static SignUpUI getInstance() { // getter for the singleton object
+		return su;
 	}
 
 	private void initUI() {
@@ -46,7 +44,8 @@ class LoginUI {
 				| InstantiationException e) {
 
 		}
-		choice = JOptionPane.showConfirmDialog(null, "Proceed to Login?", "Login Prompt!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		choice = JOptionPane.showConfirmDialog(null, "Proceed to SignUp?", "SignUp Prompt!", JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
 		if (choice == JOptionPane.YES_OPTION)
 			createFrame();
 		else
@@ -55,7 +54,7 @@ class LoginUI {
 
 	private void createFrame() {
 
-		frame = new JFrame("Login Form");
+		frame = new JFrame("SignUp Form");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		panel = new JPanel();
@@ -82,11 +81,11 @@ class LoginUI {
 		tfUname.setBounds(120, 20, 120, 20);
 
 		pfPwd = new JPasswordField(10);
-		pfPwd.setEchoChar('*');
+		// pfPwd.setEchoChar('*');
 		pfPwd.setBounds(120, 50, 120, 20);
 
-		btnLogin = new JButton("Login");
-		btnLogin.setBounds(50, 85, 90, 25);
+		btnSignUp = new JButton("Sign Up");
+		btnSignUp.setBounds(50, 85, 90, 25);
 		btnCancel = new JButton("Cancel");
 		btnCancel.setBounds(150, 85, 90, 25);
 
@@ -94,24 +93,23 @@ class LoginUI {
 		panel.add(lblPwd);
 		panel.add(tfUname);
 		panel.add(pfPwd);
-		panel.add(btnLogin);
+		panel.add(btnSignUp);
 		panel.add(btnCancel);
 
 		eventListener(); // delegate action listener to separate method
 	}
 
 	private void eventListener() { // event handler for buttons
-		btnLogin.addActionListener(new ActionListener() {
+		btnSignUp.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				count++; // Counter for login attempts
 				try {
 					String uname = tfUname.getText().trim();
 					String pwd = new String(pfPwd.getPassword());
-					new LoginDbConn(uname, pwd); // startDB after user presses
-					// the login button
+					new SignUpDbConn(uname, pwd); // startDB after user presses
+					// the SignUp button
 				} catch (Exception ex) {
 					// TODO: handle exception
 				}
@@ -135,26 +133,30 @@ class LoginUI {
 
 	}
 
-	void loginSuccess() {
-		JOptionPane.showMessageDialog(null, "Logged in successfully!");
-		clearTF();
-		System.exit(0);
-	}
-
-	void loginFailed() {
-		if (count > 2) { // Allow only 3 login attempts
-			JOptionPane.showMessageDialog(null, "Exceeded Max Login Attempts! Exiting!", null, JOptionPane.WARNING_MESSAGE);
-			System.exit(0);
+	void signUpSuccess() {
+		JOptionPane.showMessageDialog(null, "Successfully Signed Up!");
+		choice = JOptionPane.showConfirmDialog(null, "Do you wish to Login now?", "Login now?", JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		if (choice == JOptionPane.YES_OPTION) {
+			frame.setVisible(false);
+			frame.dispose();
+			LoginUI.getInstance();
 		}
 		else {
-			JOptionPane.showMessageDialog(null, "Login Failed! "+(3-count)+" Login attempt/s left!");
 			clearTF();
+			System.exit(0);
 		}
+	}
+
+	void userExists() {
+
+		JOptionPane.showMessageDialog(null, "User Exists. Please choose a different username.");
+		clearTF();
+
 	}
 
 	private void clearTF() { // clear JTextField
 		tfUname.setText("");
 		pfPwd.setText("");
 	}
-
 }
