@@ -25,13 +25,14 @@ public class LoginUI {
 	private JPasswordField pfPwd;
 	private JButton btnLogin, btnCancel;
 
-	private static LoginUI lu = new LoginUI();
+	private static final LoginUI lu = new LoginUI(); // immutable singleton
+														// object
 
-	private LoginUI() {
+	private LoginUI() { // prevent external instantiation
 		createFrame();
 	}
 
-	static LoginUI getInstance() {
+	static LoginUI getInstance() { // getter for the singleton object
 		return lu;
 	}
 
@@ -50,7 +51,7 @@ public class LoginUI {
 
 		panel = new JPanel();
 		frame.add(panel);
-		placePanelComponents(panel);
+		placePanelComponents(panel); // UI components handler
 
 		frame.setSize(300, 160);
 		frame.setResizable(false);
@@ -87,10 +88,10 @@ public class LoginUI {
 		panel.add(btnLogin);
 		panel.add(btnCancel);
 
-		eventListener();
+		eventListener(); // delegate action listener to separate method
 	}
 
-	private void eventListener() {
+	private void eventListener() { // event handler for buttons
 		btnLogin.addActionListener(new ActionListener() {
 
 			@Override
@@ -135,7 +136,7 @@ public class LoginUI {
 		clearTF();
 	}
 
-	private void clearTF() {
+	private void clearTF() { // clear JTextField
 		tfUname.setText("");
 		pfPwd.setText("");
 	}

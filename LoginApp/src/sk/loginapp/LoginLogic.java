@@ -7,17 +7,18 @@ import javax.swing.SwingUtilities;
 
 public class LoginLogic {
 
-	LoginUI lu = LoginUI.getInstance();
+	static final LoginUI lu = LoginUI.getInstance(); // immutable singleton
+														// object reference
 
 	public LoginLogic() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public LoginLogic(ResultSet rs) {
+	public LoginLogic(ResultSet rs) { // parameterized constructor
 		process(rs);
 	}
 
-	void process(ResultSet rs) {
+	void process(ResultSet rs) { // process ResultSet to authenticate login
 		try {
 			if (rs.next()) {
 				lu.loginSuccess();
@@ -32,7 +33,8 @@ public class LoginLogic {
 
 	public static void main(String[] args) {
 
-		SwingUtilities.invokeLater(new Runnable() {
+		SwingUtilities.invokeLater(new Runnable() {// delegate GUI updated to
+													// EDT
 
 			@Override
 			public void run() {
