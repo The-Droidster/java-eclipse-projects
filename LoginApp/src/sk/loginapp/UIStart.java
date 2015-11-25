@@ -19,16 +19,16 @@ public class UIStart {
 		}
 		choice = JOptionPane.showConfirmDialog(null, "Do You have an account?", "Login or SignUp?",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-		
-		switch (choice) {		
+
+		switch (choice) {
 		case JOptionPane.YES_OPTION: // Account exists, proceed to Login
 			LoginUI.getInstance();
 			break;
-			
+
 		case JOptionPane.NO_OPTION:
 			SignUpUI.getInstance(); // New user, proceed to Sign Up
 			break;
-			
+
 		default:
 			System.exit(0);
 			break;

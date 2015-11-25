@@ -25,10 +25,9 @@ class LoginUI {
 	private JPasswordField pfPwd;
 	private JButton btnLogin, btnCancel;
 
-	private static int count = 0;
-	private int choice;
+	private int choice; // Proceed to Login?
 	private static final LoginUI lg = new LoginUI(); // immutable singleton
-														// object
+	// object
 
 	private LoginUI() { // prevent external instantiation
 		initUI();
@@ -46,10 +45,11 @@ class LoginUI {
 				| InstantiationException e) {
 			e.printStackTrace();
 		}
-		
-		choice = JOptionPane.showConfirmDialog(null, "Proceed to Login?", "Login Prompt!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+		choice = JOptionPane.showConfirmDialog(null, "Proceed to Login?", "Login Prompt!", JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
 		if (choice == JOptionPane.YES_OPTION)
-			createFrame();
+			createFrame(); // call frame creation
 		else
 			System.exit(0);
 	}
@@ -70,9 +70,9 @@ class LoginUI {
 
 	}
 
-	private void placePanelComponents(JPanel panel) { // Add components to panel 
+	private void placePanelComponents(JPanel panel) { // Add components to panel
 
-		panel.setLayout(null);
+		panel.setLayout(null); // absolute layout
 
 		lblUname = new JLabel("Username: ");
 		lblUname.setBounds(50, 20, 120, 20);
@@ -82,7 +82,7 @@ class LoginUI {
 		tfUname = new JTextField(10);
 		tfUname.setBounds(120, 20, 120, 20);
 
-		pfPwd = new JPasswordField(10);
+		pfPwd = new JPasswordField(10); // conceals characters by default
 		pfPwd.setBounds(120, 50, 120, 20);
 
 		btnLogin = new JButton("Login");
@@ -106,11 +106,11 @@ class LoginUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				count++; // Counter for login attempts
 				try {
 					String uname = tfUname.getText().trim();
 					String pwd = new String(pfPwd.getPassword());
-					new LoginDbConn(uname, pwd); // startDB after user presses
+					new LoginLogic().process(uname, pwd); // startDB after user
+															// presses
 					// the login button
 				} catch (Exception ex) {
 					// TODO: handle exception
@@ -135,21 +135,18 @@ class LoginUI {
 
 	}
 
-	void loginSuccess() {
+	void loginSuccess() { // login success prompt
 		JOptionPane.showMessageDialog(null, "Logged in successfully!");
 		clearTF();
 		System.exit(0);
 	}
 
-	void loginFailed() {
-		if (count > 2) { // Allow only 3 login attempts
-			JOptionPane.showMessageDialog(null, "Exceeded Max Login Attempts! Exiting!", "Too many tries", JOptionPane.WARNING_MESSAGE);
-			System.exit(0);
-		}
-		else {
-			JOptionPane.showMessageDialog(null, "Login Failed! "+(3-count)+" Login attempt/s left!");
-			clearTF();
-		}
+	void loginFailed(int count) { // login failure prompt
+
+		// notify remaining attempts
+		JOptionPane.showMessageDialog(null, "Login Failed! " + (3 - count) + " Login attempt/s left!");
+		clearTF();
+
 	}
 
 	private void clearTF() { // clear JTextField
@@ -157,4 +154,9 @@ class LoginUI {
 		pfPwd.setText("");
 	}
 
+	void failExceeded() { // 3 login attempts exceeded
+		JOptionPane.showMessageDialog(null, "Exceeded Max Login Attempts! Exiting!", "Too many tries",
+				JOptionPane.WARNING_MESSAGE);
+		System.exit(0);
+	}
 }
