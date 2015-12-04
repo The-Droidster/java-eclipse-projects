@@ -13,6 +13,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -35,16 +36,17 @@ public class SwingUI {
 	private JFrame frame;
 	private JPanel panel,
 	btnPanel,
-	ckBoxPanel, ckBoxSelItemPanel, ckBoxFontPanel,
+	ckBoxItemPanel, ckBoxSelItemPanel, ckBoxFruitPanel, ckBoxFontPanel,
 	radioPanel, 
 	colChBannerPanel, colChBannerBgColPanel, colChBannerTxtColPanel, colChBottomPanel;
 	private JLabel label, lbl1, lbl2, lbl3, lbl4, //Label
 	lblCounter, //used with Button
 	lblCkBoxItems, lblCkBoxSelItems, lblCkBoxApple, lblCkBoxOrange, lblCkBoxGrapes, lblCkBoxBanana, lblCkBoxMango, lblCkBoxText, //CheckBoxLabels
 	lblRadio, 
-	lblColChBanner; 
+	lblColChBanner, 
+	lblComboBoxText; 
 	private JButton button, btnBack, 
-	btnCount,
+	btnCount, btnReset, 
 	btnColChBannerBgColor;
 	private JCheckBox ckBoxApple, ckBoxOrange, ckBoxGrapes, ckBoxBanana, ckBoxMango, 
 	ckBoxBold, ckBoxItalic;
@@ -53,7 +55,7 @@ public class SwingUI {
 	private Color bannerBgColor, bannerTextColor; //To be used with JColorChooser
 	private JColorChooser bannerTextColorChooser;
 	private JComboBox<String> comboBox;
-	private int count = 0;
+	private int count;
 	
 	
 	
@@ -66,7 +68,7 @@ public class SwingUI {
 	}
 	
 	private void createFrame() {
-		frame = new JFrame("MyFrame");
+		frame = new JFrame("Swing Components Demo");
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		createPanel();
 		frame.pack();
@@ -90,11 +92,14 @@ public class SwingUI {
 		
 		btnPanel(); //Refresh btnPanel, Remove any additional buttons
 		
-		String[] list = {"Buttons", "Checkboxes", "RadioButtons", "Labels", "ColorChooser"};		
+		lblComboBoxText = new JLabel("", SwingConstants.CENTER);
+		
+		String[] list = {"Buttons", "CheckBoxes", "RadioButtons", "Labels", "ColorChooser", "ComboBoxes"};		
 		comboBox = new JComboBox<>(list);
 		
 		button = new JButton("Go!");
 		
+		panel.add(lblComboBoxText);
 		panel.add(comboBox);
 		panel.add(button);
 		
@@ -110,7 +115,7 @@ public class SwingUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				selectedIndex = comboBox.getSelectedIndex();
+				selectedIndex = comboBox.getSelectedIndex(); //getSelectedItem() returns String name of the item
 				
 				switch (selectedIndex) {
 				case 0: showButton();					
@@ -128,8 +133,8 @@ public class SwingUI {
 				case 4:	showColorChooser();
 					break;
 					
-				case 5:	
-					break;
+				case 5:	showComboBox();
+						break;
 					
 				default:
 					break;
@@ -137,6 +142,8 @@ public class SwingUI {
 				
 			}
 		});
+		
+		backEventListener();
 		
 	}
 	
@@ -165,16 +172,21 @@ public class SwingUI {
 	}
 	
 	private void showButton() {
+		count = 0;
+		
 		panelClear();
 		
 		panel.setLayout(new GridLayout(0, 1, 5, 10));
 		
-		btnCount = new JButton("Click Me!");
-		lblCounter = new JLabel("Number Of Clicks: 0");
+		lblCounter = new JLabel("Number Of Clicks: " + count);
 		lblCounter.setHorizontalAlignment(SwingConstants.CENTER);
 		
+		btnCount = new JButton("Click Me!");
+		btnReset = new JButton("Reset");
+				
 		panel.add(lblCounter);
 		btnPanel.add(btnCount);
+		btnPanel.add(btnReset);
 		panel.add(btnPanel);
 		
 		updateUI();
@@ -184,7 +196,17 @@ public class SwingUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				count++;
-				lblCounter.setText("Number Of Clicks: "+count);
+				lblCounter.setText("Number Of Clicks: "+ count);
+				updateUI();
+			}
+		});
+		
+		btnReset.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				count = 0;
+				lblCounter.setText("Number Of Clicks: "+ count);
 				updateUI();
 			}
 		});
@@ -195,14 +217,21 @@ public class SwingUI {
 	private void showCheckBox() {
 		panelClear();
 		
+		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		
 		//Fruits Panel
-		ckBoxPanel = new JPanel();
-		ckBoxPanel.setLayout(new GridLayout(0, 1));
-		panel.add(ckBoxPanel);
+		ckBoxFruitPanel = new JPanel();
+		ckBoxFruitPanel.setLayout(new FlowLayout());
+		
+		ckBoxItemPanel = new JPanel();
+		ckBoxItemPanel.setLayout(new GridLayout(0, 1));
+		ckBoxFruitPanel.add(ckBoxItemPanel);
 		
 		ckBoxSelItemPanel = new JPanel();
 		ckBoxSelItemPanel.setLayout(new GridLayout(0, 1, 0, 8));
-		panel.add(ckBoxSelItemPanel);
+		ckBoxFruitPanel.add(ckBoxSelItemPanel);
+		
+		panel.add(ckBoxFruitPanel);	//Added on base panel - Vertical BoxLayout
 		
 		ckBoxApple = new JCheckBox("Apple");
 		ckBoxOrange = new JCheckBox("Orange");
@@ -218,12 +247,12 @@ public class SwingUI {
 		lblCkBoxBanana = new JLabel("Banana");
 		lblCkBoxMango = new JLabel("Mango");
 		
-		ckBoxPanel.add(lblCkBoxItems);
-		ckBoxPanel.add(ckBoxApple);
-		ckBoxPanel.add(ckBoxOrange);
-		ckBoxPanel.add(ckBoxGrapes);
-		ckBoxPanel.add(ckBoxBanana);
-		ckBoxPanel.add(ckBoxMango);
+		ckBoxItemPanel.add(lblCkBoxItems);
+		ckBoxItemPanel.add(ckBoxApple);
+		ckBoxItemPanel.add(ckBoxOrange);
+		ckBoxItemPanel.add(ckBoxGrapes);
+		ckBoxItemPanel.add(ckBoxBanana);
+		ckBoxItemPanel.add(ckBoxMango);
 		
 		ckBoxSelItemPanel.add(lblCkBoxSelItems);
 		
@@ -231,9 +260,9 @@ public class SwingUI {
 		ckBoxFontPanel = new JPanel();
 		ckBoxFontPanel.setLayout(new GridLayout(0, 1));
 		ckBoxFontPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
-		panel.add(ckBoxFontPanel);
+		panel.add(ckBoxFontPanel);	//Added on base panel - Vertical BoxLayout
 		
-		lblCkBoxText = new JLabel("This is some text.");
+		lblCkBoxText = new JLabel("This is some text.", SwingConstants.CENTER);
 		lblCkBoxText.setFont(new Font("Serif", Font.PLAIN, 14));
 		
 		ckBoxBold = new JCheckBox("Bold");
@@ -243,7 +272,7 @@ public class SwingUI {
 		ckBoxFontPanel.add(ckBoxBold);
 		ckBoxFontPanel.add(ckBoxItalic);
 		
-		panel.add(btnPanel);
+		panel.add(btnPanel);	//Added on base panel - Vertical BoxLayout
 		
 		updateUI();
 		
@@ -348,7 +377,8 @@ public class SwingUI {
 		radioPanel.setLayout(new GridLayout(0, 1)); //Redundant if main panel set to GridLayout
 		panel.add(radioPanel, BorderLayout.CENTER);
 		
-		lblRadio = new JLabel("", SwingConstants.CENTER);
+		lblRadio = new JLabel("Go On...Make Your Choice!", SwingConstants.CENTER);
+		lblRadio.setPreferredSize(new Dimension(200, 40));
 		lblRadio.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
 		
 		radioBtnNexus = new JRadioButton("Nexus Fan");
@@ -444,7 +474,7 @@ public class SwingUI {
 		bannerTextColorChooser.getSelectionModel().addChangeListener(new ChangeListener() {
 			
 			@Override
-			public void stateChanged(ChangeEvent arg0) {
+			public void stateChanged(ChangeEvent e) {
 				bannerTextColor = bannerTextColorChooser.getColor();
 				lblColChBanner.setForeground(bannerTextColor);				
 			}
@@ -466,6 +496,15 @@ public class SwingUI {
 		});
 		
 		backEventListener();
+	}
+	
+	private void showComboBox() {
+		panel.setLayout(new GridLayout(0, 1, 5, 5));
+		lblComboBoxText.setText("Oh! You are using one! ;-)");
+		lblComboBoxText.setPreferredSize(new Dimension(300, 20));
+		btnPanel.add(button);
+		panel.add(btnPanel);
+		updateUI();
 	}
 	
 	private void fontCheck() {
