@@ -7,10 +7,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -19,10 +21,13 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -44,10 +49,12 @@ public class SwingUI {
 	lblCkBoxItems, lblCkBoxSelItems, lblCkBoxApple, lblCkBoxOrange, lblCkBoxGrapes, lblCkBoxBanana, lblCkBoxMango, lblCkBoxText, //CheckBoxLabels
 	lblRadio, 
 	lblColChBanner, 
-	lblComboBoxText; 
+	lblComboBoxText, 
+	lblFCLog; 
 	private JButton button, btnBack, 
 	btnCount, btnReset, 
-	btnColChBannerBgColor;
+	btnColChBannerBgColor, 
+	btnOpenFile, btnSaveFile;
 	private JCheckBox ckBoxApple, ckBoxOrange, ckBoxGrapes, ckBoxBanana, ckBoxMango, 
 	ckBoxBold, ckBoxItalic;
 	private JRadioButton radioBtnNexus, radioBtnIPhone, radioBtnLumia;
@@ -55,10 +62,13 @@ public class SwingUI {
 	private Color bannerBgColor, bannerTextColor; //To be used with JColorChooser
 	private JColorChooser bannerTextColorChooser;
 	private JComboBox<String> comboBox;
+	//private JOptionPane optionPane; //Can be used with JDialog to initialize a JOptioPane and then add it to the JDialog container
+	private JFileChooser fileChooser;
+	private JTextArea tAreaFCLog;
+	private File file;
 	private int count;
-	
-	
-	
+	private int fcRetVal;
+		
 	public SwingUI() {
 		initUI();
 	}
@@ -94,7 +104,7 @@ public class SwingUI {
 		
 		lblComboBoxText = new JLabel("", SwingConstants.CENTER);
 		
-		String[] list = {"Buttons", "CheckBoxes", "RadioButtons", "Labels", "ColorChooser", "ComboBoxes"};		
+		String[] list = {"Buttons", "CheckBoxes", "RadioButtons", "Labels", "ColorChooser", "ComboBoxes", "Dialogs", "FileChooser"};		
 		comboBox = new JComboBox<>(list);
 		
 		button = new JButton("Go!");
@@ -136,6 +146,18 @@ public class SwingUI {
 				case 5:	showComboBox();
 						break;
 					
+				case 6: showDialog();
+					break;
+				
+				case 7: showFileChooser();
+						break;
+						
+				case 8:
+					
+				case 9:
+					
+				case 10:
+						
 				default:
 					break;
 				}
@@ -507,7 +529,80 @@ public class SwingUI {
 		updateUI();
 	}
 	
-	private void fontCheck() {
+	private void showDialog() {
+		int option = JOptionPane.showConfirmDialog(frame, "This is a dialog. Show Another?", "A confirmation Dialog", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		
+		if(option == JOptionPane.YES_OPTION) {
+			JOptionPane.showMessageDialog(null, "This is another dialog.\nThere are many more types and options. But we'll stop here.", "A message dialog.", JOptionPane.INFORMATION_MESSAGE);
+		}
+		else {
+			JOptionPane.showMessageDialog(null, "Tsk, It really was a good dialog you know! :-(", "An error message dialog", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	private void showFileChooser() {
+		panelClear();
+		
+		panel.setLayout(new BorderLayout(0, 5));
+		
+		fileChooser = new JFileChooser();
+		
+		btnOpenFile = new JButton("Open a File");
+		btnSaveFile = new JButton("Save a File");
+		
+		lblFCLog = new JLabel("Task Log:-"); 
+		
+		tAreaFCLog = new JTextArea();		
+		tAreaFCLog.setFont(new Font("Monotype", Font.BOLD, 12));
+		tAreaFCLog.setMargin(new Insets(5, 5, 5, 5));
+		tAreaFCLog.setEditable(false);
+		
+		btnPanel.add(btnSaveFile);
+		btnPanel.add(btnOpenFile);		
+		panel.add(btnPanel, BorderLayout.PAGE_START);
+		panel.add(lblFCLog, BorderLayout.CENTER);
+		panel.add(tAreaFCLog, BorderLayout.PAGE_END);
+		
+		updateUI();
+		
+		btnOpenFile.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fcRetVal = fileChooser.showOpenDialog(frame);
+				
+				if(fcRetVal == JFileChooser.APPROVE_OPTION) {
+					file = fileChooser.getSelectedFile();
+					tAreaFCLog.append(">Opening: " + file.getName() +".\n");
+				}
+				else {
+					tAreaFCLog.append(">Open command cancelled by user.\n");
+				}
+				updateUI();
+			}
+		});
+		
+		btnSaveFile.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fcRetVal = fileChooser.showSaveDialog(frame);
+				
+				if(fcRetVal == JFileChooser.APPROVE_OPTION) {
+					file = fileChooser.getSelectedFile();
+					tAreaFCLog.append(">Saving: " + file.getName() +".\n");
+				}
+				else {
+					tAreaFCLog.append(">Save command cancelled by user.\n");
+				}
+				updateUI();
+			}
+		});
+		
+		backEventListener();
+	}
+	
+ 	private void fontCheck() {
 		if(ckBoxBold.isSelected()&&ckBoxItalic.isSelected()) {
 			lblCkBoxText.setFont(new Font("Serif", Font.BOLD + Font.ITALIC, 14));
 		}
