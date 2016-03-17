@@ -25,7 +25,7 @@ public class OracleJdbcDemo {
 			Statement st = conn.createStatement();
 
 			// 3. Execute SQL query
-			String sql = "select * from users";
+			String sql = "select * from user_demo";
 			ResultSet rs = st.executeQuery(sql);
 
 			// 4. Process the result set

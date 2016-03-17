@@ -12,63 +12,89 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
+import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class SwingUI {
 
 	private int selectedIndex;
 	
-	private JFrame frame;
+	private JFrame frame, frameDemo;
 	private JPanel panel,
 	btnPanel,
 	ckBoxItemPanel, ckBoxSelItemPanel, ckBoxFruitPanel, ckBoxFontPanel,
 	radioPanel, 
-	colChBannerPanel, colChBannerBgColPanel, colChBannerTxtColPanel, colChBottomPanel;
+	colChBannerPanel, colChBannerBgColPanel, colChBannerTxtColPanel, colChBottomPanel, 
+	listPanel, listColPanel, listShopPanel, listShopBtnPanel;
 	private JLabel label, lbl1, lbl2, lbl3, lbl4, //Label
 	lblCounter, //used with Button
 	lblCkBoxItems, lblCkBoxSelItems, lblCkBoxApple, lblCkBoxOrange, lblCkBoxGrapes, lblCkBoxBanana, lblCkBoxMango, lblCkBoxText, //CheckBoxLabels
 	lblRadio, 
 	lblColChBanner, 
 	lblComboBoxText, 
-	lblFCLog; 
+	lblFCLog, 
+	frameLbl, 
+	lblLyrdPane, 
+	lblColList, lblShopList; 
 	private JButton button, btnBack, 
 	btnCount, btnReset, 
 	btnColChBannerBgColor, 
-	btnOpenFile, btnSaveFile;
+	btnOpenFile, btnSaveFile,
+	btnLPTop, btnLPMiddle, btnLPBottom, 
+	btnShopListAdd, btnShopListRemove;
 	private JCheckBox ckBoxApple, ckBoxOrange, ckBoxGrapes, ckBoxBanana, ckBoxMango, 
 	ckBoxBold, ckBoxItalic;
 	private JRadioButton radioBtnNexus, radioBtnIPhone, radioBtnLumia;
-	ButtonGroup radioGroup;
+	private ButtonGroup radioGroup;
 	private Color bannerBgColor, bannerTextColor; //To be used with JColorChooser
 	private JColorChooser bannerTextColorChooser;
 	private JComboBox<String> comboBox;
 	//private JOptionPane optionPane; //Can be used with JDialog to initialize a JOptioPane and then add it to the JDialog container
 	private JFileChooser fileChooser;
 	private JTextArea tAreaFCLog;
+	private JInternalFrame internalFrame;
+	private JDesktopPane desktopPane; //container for internalFrame
+	private JLayeredPane layeredPane;
+	private JList<String> colorList, shopList;
+	private DefaultListModel<String> listModel; //Required for a mutable list
+	private JScrollPane jSPShopList;
+	private JTextField tfShopListItem;
 	private File file;
 	private int count;
 	private int fcRetVal;
-		
+	private String[] compList, colorNames;
+	
 	public SwingUI() {
 		initUI();
 	}
@@ -102,10 +128,11 @@ public class SwingUI {
 		
 		btnPanel(); //Refresh btnPanel, Remove any additional buttons
 		
-		lblComboBoxText = new JLabel("", SwingConstants.CENTER);
+		lblComboBoxText = new JLabel("Select a component to demo it! ==>", SwingConstants.CENTER);
 		
-		String[] list = {"Buttons", "CheckBoxes", "RadioButtons", "Labels", "ColorChooser", "ComboBoxes", "Dialogs", "FileChooser"};		
-		comboBox = new JComboBox<>(list);
+		compList = new String[]{"Select Component", "Buttons", "CheckBoxes", "RadioButtons", "Labels", "ColorChooser", "ComboBoxes", "Dialogs", "FileChooser", "Frame", "InternalFrame", "LayeredPane", "Lists"};		
+		comboBox = new JComboBox<>(compList);
+		comboBox.setSelectedIndex(0);
 		
 		button = new JButton("Go!");
 		
@@ -128,44 +155,49 @@ public class SwingUI {
 				selectedIndex = comboBox.getSelectedIndex(); //getSelectedItem() returns String name of the item
 				
 				switch (selectedIndex) {
-				case 0: showButton();					
+				case 1: showButton();					
 					break;
 				
-				case 1:	showCheckBox();			
+				case 2:	showCheckBox();			
 					break;	
 					
-				case 2:	showRadioButton();			
+				case 3:	showRadioButton();			
 					break;	
 					
-				case 3:	showLabel();				
+				case 4:	showLabel();				
 					break;
 					
-				case 4:	showColorChooser();
+				case 5:	showColorChooser();
 					break;
 					
-				case 5:	showComboBox();
+				case 6:	showComboBox();
 						break;
 					
-				case 6: showDialog();
+				case 7: showDialog();
 					break;
 				
-				case 7: showFileChooser();
+				case 8: showFileChooser();
 						break;
 						
-				case 8:
+				case 9: showFrame();
+						break;
 					
-				case 9:
+				case 10: showFrame();
+						showInternalFrame();
+						break;
 					
-				case 10:
+				case 11: showLayeredPane();
+						 break;
+				
+				case 12: showList();
+				 		 break;
 						
-				default:
+				default: JOptionPane.showMessageDialog(frame, "Please select a component from the dropdown!", "No selection made!", JOptionPane.WARNING_MESSAGE);
 					break;
 				}
 				
 			}
 		});
-		
-		backEventListener();
 		
 	}
 	
@@ -189,8 +221,6 @@ public class SwingUI {
 		panel.add(btnPanel);
 		
 		updateUI();
-		
-		backEventListener();
 	}
 	
 	private void showButton() {
@@ -232,8 +262,7 @@ public class SwingUI {
 				updateUI();
 			}
 		});
-		
-		backEventListener();		
+				
 	}
 	
 	private void showCheckBox() {
@@ -386,8 +415,6 @@ public class SwingUI {
 			}
 		});
 		
-		
-		backEventListener();
 	}
 	
 	private void showRadioButton() {
@@ -444,8 +471,7 @@ public class SwingUI {
 				radioCheck();		
 			}
 		});
-		
-		backEventListener();
+
 	}
 	
 	private void showColorChooser() {
@@ -517,16 +543,12 @@ public class SwingUI {
 			}
 		});
 		
-		backEventListener();
 	}
 	
-	private void showComboBox() {
-		panel.setLayout(new GridLayout(0, 1, 5, 5));
-		lblComboBoxText.setText("Oh! You are using one! ;-)");
-		lblComboBoxText.setPreferredSize(new Dimension(300, 20));
-		btnPanel.add(button);
+	private void showComboBox() {		
+		lblComboBoxText.setText("Oh! You are using one! ;-) ===> ");
 		panel.add(btnPanel);
-		updateUI();
+		updateUI();		
 	}
 	
 	private void showDialog() {
@@ -599,7 +621,280 @@ public class SwingUI {
 			}
 		});
 		
-		backEventListener();
+	}
+	
+	private void showFrame() {
+		
+		frame.setVisible(false);
+		frameDemo = new JFrame("A bare JFrame. This window is a frame!");	
+		//frameDemo.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); => replaced by WindowListener
+		frameDemo.setSize(500, 500);
+		frameLbl = new JLabel("All previous windows were frames too. Close this window to return to the main menu.", SwingConstants.CENTER);
+		frameDemo.getContentPane().add(frameLbl);//not adding a panel explicitly
+		frameDemo.setLocationRelativeTo(null);
+		frameDemo.setVisible(true);
+		
+		frameDemo.addWindowListener(new WindowAdapter() {
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				e.getWindow().dispose();
+				frame.setVisible(true);
+				showMainMenu();
+			}
+		});
+	}
+	
+	//Utilizes the same frame from the showFrame method
+	private void showInternalFrame() {
+		
+		/* 
+		 * 1. Clear the frameDemo frame
+		 * 2. Create and adds a desktopPane as its(frames) contentPane
+		 * The desktopPane can hold internalFrames
+		 * 3. create and add an internalFrame to the desktopPane
+		 * 4. add a label/component to the contentPane/Panel of the interalFrame
+		 */
+		
+		//1.
+		frameDemo.getContentPane().removeAll();//getContentPane emulates a panel as it was not added explicitly to the frame
+		frameDemo.getContentPane().revalidate();
+		frameDemo.getContentPane().repaint();
+		frameDemo.setTitle("Top Level Frame/Window, A container for InternalFrames");
+		
+		//2.
+		desktopPane = new JDesktopPane(); //Container for InternalFrames, A container used to create a multiple-document interface or a virtual desktop.
+		frameDemo.setContentPane(desktopPane);//setting the content pane to desktopPane NOT a Panel
+		
+		//3.
+		internalFrame = new JInternalFrame("An Internal Frame.", true, true, true);
+		internalFrame.setSize(300, 300);
+		
+		//4.
+		frameLbl.setText("<html><center>This is an Internal Frame.<br>Close the outer window to return to the main menu!</center></html>");
+		internalFrame.getContentPane().add(frameLbl);//Alternately add panel to internal frame and add other components to the panel
+		
+		//3.
+		internalFrame.setVisible(true);
+		desktopPane.add(internalFrame);		
+		
+	}
+	
+	private void showLayeredPane() {
+		panelClear();
+		
+		panel.setLayout(new BorderLayout());
+		
+		layeredPane = new JLayeredPane(); //you can just get the default layered pane of the pane
+										//by using layeredPane = frame.getLayeredPane(); method
+		layeredPane.setPreferredSize(new Dimension(300, 250));
+		
+		lblLyrdPane = new JLabel("3 Buttons at different depths on a LayeredPane", SwingConstants.CENTER);
+		
+		btnLPTop = new JButton("Top");
+		btnLPTop.setBackground(Color.white);
+		btnLPTop.setBounds(60, 60, 100, 50);//LayeredPane by default does not have a layout manager
+											//setting position explicitly is mandatory
+											//Assigning a layout manager to the LayeredPane will put all the components as if in one layer 
+		
+		btnLPMiddle = new JButton("Middle");
+		btnLPMiddle.setBackground(Color.gray);
+		btnLPMiddle.setBounds(90, 90, 100, 50);
+		
+		btnLPBottom = new JButton("Bottom");
+		btnLPBottom.setBackground(Color.black);
+		btnLPBottom.setBounds(120, 120, 100, 50);
+		
+		layeredPane.add(btnLPTop, new Integer(3)); //Specify depth, lower integer = lower depth(deeper), index is opposite => topmost is 0
+		layeredPane.add(btnLPMiddle, new Integer(2));
+		layeredPane.add(btnLPBottom, new Integer(1));
+		
+		panel.add(lblLyrdPane, BorderLayout.PAGE_START);
+		panel.add(layeredPane, BorderLayout.CENTER);
+		panel.add(btnPanel, BorderLayout.PAGE_END);
+		
+		updateUI();	
+		
+		btnLPTop.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				lblLyrdPane.setText("Top Button Clicked ==> Depth(" + JLayeredPane.getLayer(btnLPTop) + ")");
+				updateUI();
+			}
+		});
+		
+		btnLPMiddle.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				lblLyrdPane.setText("Middle Button Clicked ==> Depth(" + JLayeredPane.getLayer(btnLPMiddle) + ")");
+				updateUI();
+			}
+		});
+	
+		btnLPBottom.addActionListener(new ActionListener() {
+	
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				lblLyrdPane.setText("Bottom Button Clicked ==> Depth(" + JLayeredPane.getLayer(btnLPBottom) + ")");
+				updateUI();
+			}
+		});
+
+	}
+	
+	private void showList() {
+		panelClear();
+		
+		//=========Panels=========
+		panel.setLayout(new BorderLayout());
+		
+		listPanel = new JPanel();
+		listPanel.setLayout(new FlowLayout());
+		
+		listColPanel = new JPanel();
+		listColPanel.setLayout(new BoxLayout(listColPanel, BoxLayout.PAGE_AXIS));
+		listColPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		
+		listShopPanel = new JPanel();
+		listShopPanel.setLayout(new BoxLayout(listShopPanel, BoxLayout.PAGE_AXIS));
+		listShopPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+		
+		listShopBtnPanel = new JPanel();
+		listShopBtnPanel.setLayout(new FlowLayout());
+		
+		lblShopList = new JLabel("Shopping List with ScrollPane =>", SwingConstants.CENTER);	
+		
+		//==========Color List===========
+		colorNames = new String[]{"Default", "Red", "Green", "Blue", "White", "Orange", "Pink", "Magenta", "Yellow", "Cyan"};
+		Color[] colors = {null, Color.RED, Color.GREEN, Color.BLUE, Color.WHITE, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.YELLOW, Color.CYAN};
+		colorList = new JList<>(colorNames); //List with fixed number of items/immutable
+		colorList.setPreferredSize(new Dimension(150, 190));
+		colorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		colorList.setLayoutOrientation(JList.VERTICAL);
+		colorList.setVisibleRowCount(-1);
+		colorList.setSelectedIndex(0);	
+				
+		lblColList = new JLabel("Select Color to change background=>", SwingConstants.CENTER);
+		lblColList.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+		
+		listColPanel.add(lblColList);
+		listColPanel.add(colorList); //List directly added to panel w/o ScrollPane(Fixed no. of items)
+		
+		//=========Shop List===========		
+		listModel = new DefaultListModel<>(); //Required for mutable list
+		shopList = new JList<>();
+		shopList.setModel(listModel); //or shopList = new JList<>(listModel); => in one line
+		shopList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		shopList.setLayoutOrientation(JList.VERTICAL);		
+		shopList.setVisibleRowCount(10);
+		
+		listModel.addElement("Shopping List :==>");
+		listModel.addElement("Milk");
+		listModel.addElement("Books");
+		listModel.addElement("Eggs");
+		shopList.setSelectedIndex(0);
+		
+		jSPShopList = new JScrollPane(shopList); //List added to ScrollPane
+		
+		tfShopListItem = new JTextField("Enter Item");
+		tfShopListItem.setPreferredSize(new Dimension(150, 25));
+		
+		btnShopListAdd = new JButton("Add Item");
+		btnShopListRemove = new JButton("Remove Selected Item");
+		btnShopListRemove.setEnabled(false);
+		
+		listShopBtnPanel.add(tfShopListItem);
+		listShopBtnPanel.add(btnShopListAdd);
+		listShopBtnPanel.add(btnShopListRemove);			
+		
+		listShopPanel.add(lblShopList);
+		listShopPanel.add(jSPShopList);
+		listShopPanel.add(listShopBtnPanel);
+		
+		//========Base List Panel========
+		listPanel.add(listColPanel);
+		listPanel.add(listShopPanel);
+		
+		//=========Base Panel==========
+		panel.add(lblShopList, BorderLayout.PAGE_START);
+		panel.add(listPanel, BorderLayout.CENTER);
+		tfShopListItem.requestFocusInWindow();
+		panel.add(btnPanel, BorderLayout.PAGE_END);
+		updateUI();
+		
+		colorList.addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				listColPanel.setBackground(colors[colorList.getSelectedIndex()]);
+				colorList.setBackground(colors[colorList.getSelectedIndex()]);
+				updateUI();
+			}
+		});
+		
+		//Disable Remove Button if title is selected
+		shopList.addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if(shopList.getSelectedIndex() == 0) {
+					btnShopListRemove.setEnabled(false);
+				}
+				else {
+					btnShopListRemove.setEnabled(true);
+				}
+				
+			}
+		});
+		
+		btnShopListAdd.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String shopListItem = tfShopListItem.getText();
+				
+				if(shopListItem.isEmpty()) {
+					JOptionPane.showMessageDialog(frame, "Please enter an item to add!", "Blank Item", JOptionPane.WARNING_MESSAGE);
+				}
+				else {
+					listModel.addElement(shopListItem);
+					tfShopListItem.requestFocusInWindow();
+					tfShopListItem.setText("");
+				}
+				
+				int size = listModel.getSize(); //store shop list size
+				if(size > 1) {
+					btnShopListRemove.setEnabled(true);
+				}
+				
+				shopList.setSelectedIndex(size-1);
+				updateUI();
+			}
+		});
+		
+		btnShopListRemove.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int index = shopList.getSelectedIndex();
+				listModel.remove(index);
+				
+				int size = listModel.getSize(); //store shop list size
+				if(size == 0) {
+					btnShopListRemove.setEnabled(false);
+				}
+				
+				if(index == size) {
+					shopList.setSelectedIndex(size-1);
+				}
+				else {
+					shopList.setSelectedIndex(index);
+				}
+				updateUI();				
+			}
+		});
 	}
 	
  	private void fontCheck() {
@@ -652,6 +947,8 @@ public class SwingUI {
 		
 		btnBack = new JButton("Back");
 		btnPanel.add(btnBack);
+		
+		backEventListener();
 	}
 	
 	private void panelClear() {
