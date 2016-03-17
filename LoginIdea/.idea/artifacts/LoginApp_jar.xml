@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="LoginApp:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/LoginApp_jar</output-path>
+    <root id="archive" name="LoginApp.jar">
+      <element id="module-output" name="LoginApp" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/ojdbc6.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
